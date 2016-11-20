@@ -1,0 +1,91 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.18a
+Copyright (C) 2016 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Joe Krachey UW-Madison Flex license: MDK-ARM Professional: 300 user(s) (mdk_pro) Operation stops: 22 Aug 2017
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Professional: 300 user(s)  Version: 5.18a
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 1 (build 61)
+Assembler:       Armasm.exe V5.06 update 1 (build 61)
+Linker/Locator:  ArmLink.exe V5.06 update 1 (build 61)
+Library Manager: ArmAr.exe V5.06 update 1 (build 61)
+Hex Converter:   FromElf.exe V5.06 update 1 (build 61)
+CPU DLL:         SARMCM3.DLL V5.18a
+Dialog DLL:      DCM.DLL V1.13.6.0
+Target DLL:      lmidk-agdi.dll V???
+Dialog DLL:      TCM.DLL V1.14.8.0
+ 
+<h2>Project:</h2>
+C:\Users\joe.krachey\Documents\ece353-src\staff-v2.0\validation\validation_lib.uvprojx
+Project File Date:  08/25/2016
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Rebuild target 'Target 1'
+compiling validate_adc.c...
+compiling ice_adc.c...
+compiling ice_gpio_port.c...
+compiling ice_gpt.c...
+compiling validate_led.c...
+compiling validate_gp_timer.c...
+validate_gp_timer.c(125): warning:  #177-D: function "validate_gpt_interval" was declared but never referenced
+  static bool validate_gpt_interval(uint32_t base_addr, uint32_t ticks)
+validate_gp_timer.c: 1 warning, 0 errors
+compiling ice_gpiof.c...
+compiling validate_gpio.c...
+compiling board_setup.c...
+compiling validate_sysctl.c...
+compiling validate_uart.c...
+validate_uart.c(145): warning:  #188-D: enumerated type mixed with another type
+         return 0;
+validate_uart.c: 1 warning, 0 errors
+compiling ice_systick.c...
+compiling ice_uart_rx_irq.c...
+compiling validate_lcd.c...
+compiling ice_lcd.c...
+compiling ice_uart_tx_irq.c...
+compiling validate_spi.c...
+compiling ice_spi_nordic.c...
+compiling ice_intro_to_c.c...
+compiling ice_uart_polling.c...
+compiling ice_pc_buffer.c...
+compiling ice_i2c_eeprom.c...
+creating Library...
+"..\..\student\lib\ECE353-Validate.lib" - 0 Error(s), 2 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.4.5.0.pack
+                ARM::CMSIS:CORE:4.3.0
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 4.3.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.TM4C_DFP.1.1.0.pack
+                Keil::Device:Startup:1.0.1
+                Texas Instruments Tiva C Series Device Support and Examples
+   * Component: Startup Version: 1.0.1
+
+<h2>Collection of Component include folders:</h2>
+  C:\Users\joe.krachey\Documents\ece353-src\staff-v2.0\validation\RTE
+  C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include
+  C:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:4.3.0
+
+   * Component: Keil::Device:Startup:1.0.1
+      Include file:  Device\Include\TM4C123\TM4C123.h
+      Source file:   Device\Source\system_TM4C123.c
+      Source file:   Device\Source\ARM\startup_TM4C123.s
+Build Time Elapsed:  00:00:01
+</pre>
+</body>
+</html>

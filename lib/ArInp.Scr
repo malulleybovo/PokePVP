@@ -1,0 +1,23 @@
+--create ..\..\student\lib\ECE353-Validate.lib
+..\..\student\lib\board_setup.o
+..\..\student\lib\validate_adc.o
+..\..\student\lib\validate_gpio.o
+..\..\student\lib\validate_led.o
+..\..\student\lib\validate_sysctl.o
+..\..\student\lib\validate_uart.o
+..\..\student\lib\ice_adc.o
+..\..\student\lib\ice_gpio_port.o
+..\..\student\lib\ice_gpiof.o
+..\..\student\lib\validate_gp_timer.o
+..\..\student\lib\ice_gpt.o
+..\..\student\lib\ice_systick.o
+..\..\student\lib\ice_uart_rx_irq.o
+..\..\student\lib\ice_lcd.o
+..\..\student\lib\ice_uart_tx_irq.o
+..\..\student\lib\validate_lcd.o
+..\..\student\lib\validate_spi.o
+..\..\student\lib\ice_spi_nordic.o
+..\..\student\lib\ice_pc_buffer.o
+..\..\student\lib\ice_intro_to_c.o
+..\..\student\lib\ice_uart_polling.o
+..\..\student\lib\ice_i2c_eeprom.o

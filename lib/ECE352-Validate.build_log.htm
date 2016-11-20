@@ -1,0 +1,57 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+D:\Box Sync\ECE353\2016-Spring\src\validation\validation_lib.uvprojx
+Project File Date:  01/21/2016
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling board_setup.c...
+compiling validate_adc.c...
+validate_adc.c(27): warning:  #177-D: function "get_adc_rcgc" was declared but never referenced
+  static uint32_t  get_adc_rcgc(uint32_t baseAddr)
+validate_adc.c: 1 warning, 0 errors
+compiling validate_gpio.c...
+compiling validate_led.c...
+compiling validate_sysctl.c...
+compiling validate_uart.c...
+compiling ice_adc.c...
+compiling ice_gpio_port.c...
+compiling ice_gpiof.c...
+assembling startup_TM4C123.s...
+compiling system_TM4C123.c...
+creating Library...
+"..\lib\ECE353-Validate.lib" - 0 Error(s), 1 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.3.20.4.pack
+                ARM::CMSIS:CORE:3.20.0
+                Cortex Microcontroller Software Interface Standard (CMSIS) CORE, DSP, RTOS, Driver
+   * Component: CORE Version: 3.20.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.TM4C_DFP.1.0.0.pack
+                Keil::Device:Startup:1.0.0
+                Texas Instruments Tiva C Series Device Support and Examples
+   * Component: Startup Version: 1.0.0
+
+<h2>Collection of Component include folders:</h2>
+  D:\Box Sync\ECE353\2016-Spring\src\validation\RTE
+  C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include
+  C:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.0.0\Device\Include\TM4C123
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:3.20.0
+
+   * Component: Keil::Device:Startup:1.0.0
+      Include file:  Device\Include\TM4C123\TM4C123.h
+      Source file:   Device\Source\ARM\startup_TM4C123.s
+      Source file:   Device\Source\system_TM4C123.c
+</pre>
+</body>
+</html>

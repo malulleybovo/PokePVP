@@ -142,3 +142,8 @@ void* linked_list_get_at(List* l, int i){
 	}
 	return curr->val;
 }
+
+void* linked_list_search(List* l, void* val){
+	//TODO
+	return NULL;
+}

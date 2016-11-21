@@ -6,14 +6,14 @@ Entity entity_new () {
 	Entity* newEntity = malloc(sizeof(Entity));
 	newEntity->draw = entity_draw;
 	newEntity->rotate90 = entity_rotate90;
-	newEntity->setPosX = entity_setPosX;
-	newEntity->setPosY = entity_setPosY;
-	newEntity->setSpdX = entity_setSpdX;
-	newEntity->setSpdY = entity_setSpdY;
-	newEntity->update_sprite = entity_update_sprite;
-	newEntity->setBaseSprite = entity_setBaseSprite;
-	newEntity->setMotSprite = entity_setMotSprite;
-	newEntity->setAtkSprite = entity_setAtkSprite;
+	newEntity->setPosX = entity_set_pos_x;
+	newEntity->setPosY = entity_set_pos_y;
+	newEntity->setSpdX = entity_set_spd_x;
+	newEntity->setSpdY = entity_set_spd_y;
+	newEntity->updateSprite = entity_update_sprite;
+	newEntity->setBaseSprite = entity_set_base_sprite;
+	newEntity->setMotSprite = entity_set_mot_sprite;
+	newEntity->setAtkSprite = entity_set_atk_sprite;
 	return *newEntity;
 }
 
@@ -37,7 +37,7 @@ void entity_draw(Entity* e){
 	
 	// Display entity in new location if it is within the screen limit
 	if (e->x <= ROWS + SPRITE_SIZE && e->y <= COLS + SPRITE_SIZE) {
-		e->update_sprite(e);
+		e->updateSprite(e);
 		lcd_draw_image(
 										e->x,                // X Center Point
 										SPRITE_SIZE,   // Image Horizontal Width
@@ -48,6 +48,9 @@ void entity_draw(Entity* e){
 										LCD_COLOR_BLACK     // Background Color
 									);
 	}
+}
+void entity_set_id(Entity* e, char* id){
+	e->id = id;
 }
 void entity_rotate90(Entity* e, bool isClkwise){
 	uint16_t tmp = e->dx;
@@ -60,16 +63,16 @@ void entity_rotate90(Entity* e, bool isClkwise){
 		e->dy = ~tmp + 1;
 	}
 }
-void entity_setPosX(Entity* e, uint16_t x){
+void entity_set_pos_x(Entity* e, uint16_t x){
 	e->x = x;
 }
-void entity_setSpdX(Entity* e, uint16_t dx){
+void entity_set_spd_x(Entity* e, uint16_t dx){
 	e->dx = dx;
 }
-void entity_setPosY(Entity* e, uint16_t y){
+void entity_set_pos_y(Entity* e, uint16_t y){
 	e->y = y;
 }
-void entity_setSpdY(Entity* e, uint16_t dy){
+void entity_set_spd_y(Entity* e, uint16_t dy){
 	e->dy = dy;
 }
 void entity_update_sprite(Entity* e){
@@ -150,7 +153,7 @@ void entity_update_sprite(Entity* e){
 		}
 	}
 }
-void entity_setBaseSprite(
+void entity_set_base_sprite(
 	Entity* e, 
 	const uint8_t *left,
 	const uint8_t *right,
@@ -161,7 +164,7 @@ void entity_setBaseSprite(
 	e->sprite_base_u = up;
 	e->sprite_base_d = down;
 }
-void entity_setMotSprite(
+void entity_set_mot_sprite(
 	Entity* e, 
 	const uint8_t *left,
 	const uint8_t *right,
@@ -172,7 +175,7 @@ void entity_setMotSprite(
 	e->sprite_mot_u = up;
 	e->sprite_mot_d = down;
 }
-void entity_setAtkSprite(
+void entity_set_atk_sprite(
 	Entity* e, 
 	const uint8_t *left,
 	const uint8_t *right,

@@ -66,5 +66,6 @@ void linked_list_add_at(List* l, void* val, int i);
 void* linked_list_remove(List* l);
 void* linked_list_remove_at(List* l, int i);
 void* linked_list_get_at(List* l, int i);
+void* linked_list_search(List* l, void* val);
 
 #endif

@@ -14,6 +14,8 @@
 typedef struct _Entity Entity;
 struct _Entity {
 	
+	char* id;
+	
 	uint16_t x;
 	uint16_t dx;
 	
@@ -45,7 +47,7 @@ struct _Entity {
 	void (*setSpdX) (Entity* e, uint16_t dx);
 	void (*setPosY) (Entity* e, uint16_t y);
 	void (*setSpdY) (Entity* e, uint16_t dy);
-	void (*update_sprite) (Entity* e);
+	void (*updateSprite) (Entity* e);
 	void (*setBaseSprite) (
 		Entity* e, 
 		const uint8_t *left,
@@ -85,24 +87,25 @@ Entity entity_new(void);
 *******************************************************************************/
 void entity_draw(Entity* e);
 void entity_rotate90(Entity* e, bool isClkwise);
-void entity_setPosX(Entity* e, uint16_t x);
-void entity_setSpdX(Entity* e, uint16_t dx);
-void entity_setPosY(Entity* e, uint16_t y);
-void entity_setSpdY(Entity* e, uint16_t dy);
+void entity_set_id(Entity* e, char* id);
+void entity_set_pos_x(Entity* e, uint16_t x);
+void entity_set_spd_x(Entity* e, uint16_t dx);
+void entity_set_pos_y(Entity* e, uint16_t y);
+void entity_set_spd_y(Entity* e, uint16_t dy);
 void entity_update_sprite(Entity* e);
-void entity_setBaseSprite(
+void entity_set_base_sprite(
 	Entity* e, 
 	const uint8_t *left,
 	const uint8_t *right,
 	const uint8_t *up,
 	const uint8_t *down);
-void entity_setMotSprite(
+void entity_set_mot_sprite(
 	Entity* e, 
 	const uint8_t *left,
 	const uint8_t *right,
 	const uint8_t *up,
 	const uint8_t *down);
-void entity_setAtkSprite(
+void entity_set_atk_sprite(
 	Entity* e, 
 	const uint8_t *left,
 	const uint8_t *right,

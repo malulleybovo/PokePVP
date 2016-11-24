@@ -1,9 +1,9 @@
 
-#include "lcd.h"
 #include "Entity.h"
 
 Entity entity_new () {
 	Entity* newEntity = malloc(sizeof(Entity));
+	newEntity->isMoving = true; // So that first draw does not skip the lcd draw
 	newEntity->draw = entity_draw;
 	newEntity->rotate90 = entity_rotate90;
 	newEntity->setPosX = entity_set_pos_x;
@@ -18,6 +18,12 @@ Entity entity_new () {
 }
 
 void entity_draw(Entity* e){
+	if (!e->isMoving && e->dx == 0 && e->dy == 0) {
+		return;
+	}
+	
+	e->isMoving = e->dx || e->dy;
+	
 	// Clear previous location of entity if it was displayed on screen
 	if (e->x <= ROWS + SPRITE_SIZE && e->y <= COLS + SPRITE_SIZE) {
 		lcd_draw_image(

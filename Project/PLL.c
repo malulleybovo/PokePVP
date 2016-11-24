@@ -49,6 +49,7 @@
 
 // configure the system to get its clock from the PLL
 void PLL_Init(void){
+	int16_t i = 0;
   // 0) configure the system to use RCC2 for advanced features
   //    such as 400 MHz PLL and non-integer System Clock Divisor
   SYSCTL_RCC2_R |= SYSCTL_RCC2_USERCC2;
@@ -69,8 +70,12 @@ void PLL_Init(void){
   SYSCTL_RCC2_R += (SYSDIV2<<22);       // divide by (SYSDIV2+1)
   // 5) wait for the PLL to lock by polling PLLLRIS
   while((SYSCTL_RIS_R&SYSCTL_RIS_PLLLRIS)==0){};
+	while(i < 5000){
+		i++;
+	}
   // 6) enable use of PLL by clearing BYPASS
   SYSCTL_RCC2_R &= ~SYSCTL_RCC2_BYPASS2;
+		
 }
 
 

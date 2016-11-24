@@ -20,6 +20,8 @@
  For more information about my classes, my research, and my books, see
  http://users.ece.utexas.edu/~valvano/
  */
+ 
+#include <stdint.h>
 
 // The #define statement SYSDIV2 initializes
 // the PLL to the desired frequency.

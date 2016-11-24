@@ -38,22 +38,11 @@ main(void)
   Entity e5 = entity_new();
 	List list;
 	
-	//PLL_Init();
+	PLL_Init();
+	
   initialize_serial_debug();
-
-  put_string("\n\r");
-  put_string("************************************\n\r");
-  put_string("ECE353 - GPIO In Class Exercise\n\r");
-  put_string("************************************\n\r");
   
   lcd_config_gpio();
-
-    // Run validation code
-  if( validate_ice(ICE_GPIO_PORT) == false)
-  {
-    while(1){
-    };
-  }
   
   lcd_config_screen();
   lcd_clear_screen(LCD_COLOR_BLACK);

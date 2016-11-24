@@ -16,11 +16,13 @@ struct _Entity {
 	
 	char* id;
 	
-	uint16_t x;
-	uint16_t dx;
+	int16_t x;
+	int16_t dx;
 	
-	uint16_t y;
-	uint16_t dy;
+	int16_t y;
+	int16_t dy;
+	
+	bool isMoving;
 	
 	uint8_t action_mask;
 	

@@ -226,24 +226,38 @@ uint8_t flipByte(uint8_t b) {
    return (uint8_t) b;
 }
 
-/* lcd_draw_image2
- * 		Custom version of lcd_draw_image that uses 6-bit color codes for every
- * 		pixel in the image. These color codes should come compacted in a byte array
- *    that gets translated into those color codes.
- * 
- * 		Max obtainable image resolution (currently) : 184 * 234 = 43056
- */
-void lcd_draw_image2(
+/*******************************************************************************
+* Function Name: lcd_draw_image_64color
+********************************************************************************
+* Summary: Draws a 64 color image that uses 6-bit color codes for every pixel
+* 	in the image. These color codes should come compacted in a byte array
+*   that gets translated into those color codes.
+*		Max obtainable image resolution (currently) : 184 * 234 = 43056 = 32k bytes
+*
+* Parameters 
+*		x_start - starting x position of the image on the lcd display
+*		image_width_bits - width of the image on the lcd display
+*		y_start - starting y position of the image on the lcd display
+*		image_height_pixels - height of the image on the lcd display
+*		image - the image pixel data composed of bytes, which for every sequence 
+*						of 3 bytes, four 6-bit pixel data are packed
+*		flipX - if true, image gets flipped horizontally
+*
+* Return:
+*  Nothing
+*******************************************************************************/
+void lcd_draw_image_64color(
   uint16_t x_start, 
   uint16_t image_width_bits, 
   uint16_t y_start, 
   uint16_t image_height_pixels, 
-  const uint8_t *image
+  const uint8_t *image,
+	bool flipX
 )
 {
-  uint16_t i,j;
-  uint8_t data0, data1, data2, data3, bl, bm, bh;
-	uint16_t color0, color1, color2, color3, r0, r1, r2, r3, g0, g1, g2, g3, b0, b1, b2, b3;
+  int16_t i,j;
+  uint8_t px_data, bl, bm, bh;
+	uint16_t color, r, g, b;
 	uint16_t bit_pos;
   uint16_t byte_index;
   uint16_t bytes_per_row;
@@ -276,48 +290,157 @@ void lcd_draw_image2(
   
   for (i = 0; i < image_height_pixels ; i++)
   {
-        if (i == 75){
-				true;
-				}
-				for(j = 0; j < bytes_per_row; j+=3)
-        {
-							byte_index = 
-									(((i / 2)) * bytes_per_row) 
-									+ (j);
-							bh = (image[byte_index]);
-							bm = (image[byte_index+1]);
-							bl = (image[byte_index+2]);
-							
-							data0 = (bl & 0x3F);
-							data1 = ((bm & 0x0F) << 2) | (bl >> 6);
-							data2 = ((bh & 0x03) << 4) | (bm >> 4);
-							data3 = (bh >> 2);
-						r3 = (data3 >> 4); g3 = ((data3 & 0x0F) >> 2); b3 = data3 & 0x03;
-						r3 = (r3 << 3) | (r3 << 1) | (r3 >> 1);
-						g3 = ((g3 << 3) | (g3 << 1) | (g3 >> 1)) << 1;
-						b3 = (b3 << 3) | (b3 << 1) | (b3 >> 1);
-						color3 = (r3 << 11) | (g3 << 5) | (b3);
-            lcd_write_data_u16(color3);
-						r2 = (data2 >> 4); g2 = ((data2 & 0x0F) >> 2); b2 = data2 & 0x03;
-						r2 = (r2 << 3) | (r2 << 1) | (r2 >> 1);
-						g2 = ((g2 << 3) | (g2 << 1) | (g2 >> 1)) << 1;
-						b2 = (b2 << 3) | (b2 << 1) | (b2 >> 1);
-						color2 = (r2 << 11) | (g2 << 5) | (b2);
-            lcd_write_data_u16(color2);
-						r1 = (data1 >> 4); g1 = ((data1 & 0x0F) >> 2); b1 = data1 & 0x03;
-						r1 = (r1 << 3) | (r1 << 1) | (r1 >> 1);
-						g1 = ((g1 << 3) | (g1 << 1) | (g1 >> 1)) << 1;
-						b1 = (b1 << 3) | (b1 << 1) | (b1 >> 1);
-						color1 = (r1 << 11) | (g1 << 5) | (b1);
-            lcd_write_data_u16(color1);
-						r0 = (data0 >> 4); g0 = ((data0 & 0x0F) >> 2); b0 = data0 & 0x03;
-						r0 = (r0 << 3) | (r0 << 1) | (r0 >> 1);
-						g0 = ((g0 << 3) | (g0 << 1) | (g0 >> 1)) << 1;
-						b0 = (b0 << 3) | (b0 << 1) | (b0 >> 1);
-						color0 = (r0 << 11) | (g0 << 5) | (b0);
-            lcd_write_data_u16(color0);
+			if(flipX){
+				j = bytes_per_row - 3;
+			}
+			else {
+				j = 0;
+			}
+		
+			while( (!flipX && j < bytes_per_row)
+					|| (flipX && j >= 0)){
+					
+					byte_index = 
+							((i) * bytes_per_row) 
+							+ (j);
+					bh = (image[byte_index]);
+					bm = (image[byte_index+1]);
+					bl = (image[byte_index+2]);
+					
+					
+					
+					if(flipX){
+						// Display pixel 3
+						px_data = (bl & 0x3F);
+						r = (px_data >> 4); g = ((px_data & 0x0F) >> 2); b = px_data & 0x03;
+						r = (r << 3) | (r << 1) | (r >> 1);
+						g = ((g << 3) | (g << 1) | (g >> 1)) << 1;
+						b = (b << 3) | (b << 1) | (b >> 1);
+						color = (r << 11) | (g << 5) | (b);
+						lcd_write_data_u16(color);
 						
-        }
+						// Display pixel 2
+						px_data = ((bm & 0x0F) << 2) | (bl >> 6);
+						r = (px_data >> 4); g = ((px_data & 0x0F) >> 2); b = px_data & 0x03;
+						r = (r << 3) | (r << 1) | (r >> 1);
+						g = ((g << 3) | (g << 1) | (g >> 1)) << 1;
+						b = (b << 3) | (b << 1) | (b >> 1);
+						color = (r << 11) | (g << 5) | (b);
+						lcd_write_data_u16(color);
+						
+						// Display pixel 1
+						px_data = ((bh & 0x03) << 4) | (bm >> 4);
+						r = (px_data >> 4); g = ((px_data & 0x0F) >> 2); b = px_data & 0x03;
+						r = (r << 3) | (r << 1) | (r >> 1);
+						g = ((g << 3) | (g << 1) | (g >> 1)) << 1;
+						b = (b << 3) | (b << 1) | (b >> 1);
+						color = (r << 11) | (g << 5) | (b);
+						lcd_write_data_u16(color);
+						
+						// Display pixel 0
+						px_data = (bh >> 2);
+						r = (px_data >> 4); g = ((px_data & 0x0F) >> 2); b = px_data & 0x03;
+						r = (r << 3) | (r << 1) | (r >> 1);
+						g = ((g << 3) | (g << 1) | (g >> 1)) << 1;
+						b = (b << 3) | (b << 1) | (b >> 1);
+						color = (r << 11) | (g << 5) | (b);
+						lcd_write_data_u16(color);
+						
+						j -= 3;
+					}
+					else {
+						// Display pixel 0
+						px_data = (bh >> 2);
+						r = (px_data >> 4); g = ((px_data & 0x0F) >> 2); b = px_data & 0x03;
+						r = (r << 3) | (r << 1) | (r >> 1);
+						g = ((g << 3) | (g << 1) | (g >> 1)) << 1;
+						b = (b << 3) | (b << 1) | (b >> 1);
+						color = (r << 11) | (g << 5) | (b);
+						lcd_write_data_u16(color);
+					
+						// Display pixel 1
+						px_data = ((bh & 0x03) << 4) | (bm >> 4);
+						r = (px_data >> 4); g = ((px_data & 0x0F) >> 2); b = px_data & 0x03;
+						r = (r << 3) | (r << 1) | (r >> 1);
+						g = ((g << 3) | (g << 1) | (g >> 1)) << 1;
+						b = (b << 3) | (b << 1) | (b >> 1);
+						color = (r << 11) | (g << 5) | (b);
+						lcd_write_data_u16(color);
+						
+						// Display pixel 2
+						px_data = ((bm & 0x0F) << 2) | (bl >> 6);
+						r = (px_data >> 4); g = ((px_data & 0x0F) >> 2); b = px_data & 0x03;
+						r = (r << 3) | (r << 1) | (r >> 1);
+						g = ((g << 3) | (g << 1) | (g >> 1)) << 1;
+						b = (b << 3) | (b << 1) | (b >> 1);
+						color = (r << 11) | (g << 5) | (b);
+						lcd_write_data_u16(color);
+						
+						// Display pixel 3
+						px_data = (bl & 0x3F);
+						r = (px_data >> 4); g = ((px_data & 0x0F) >> 2); b = px_data & 0x03;
+						r = (r << 3) | (r << 1) | (r >> 1);
+						g = ((g << 3) | (g << 1) | (g >> 1)) << 1;
+						b = (b << 3) | (b << 1) | (b >> 1);
+						color = (r << 11) | (g << 5) | (b);
+						lcd_write_data_u16(color);
+					
+						j += 3;
+					}
+				}
+  }
+}
+
+/*******************************************************************************
+* Function Name: lcd_clear_rect
+********************************************************************************
+* Summary: Clears the specified rectangular box of size "width" by "height"
+*          at (x_start, y_start) starting position on the LCD display.
+*
+* Parameters 
+*		x_start - starting x position of the rectangular box
+*		width - width of the rectangular box
+*		y_start - starting y position of the rectangular box
+*		height - height of the rectangular box
+*
+* Return:
+*  Nothing
+*******************************************************************************/
+void lcd_clear_rect(
+  uint16_t x_start, 
+  uint16_t width, 
+  uint16_t y_start, 
+  uint16_t height,
+	uint16_t bColor)
+{
+	uint16_t i,j;
+  uint16_t x0;
+  uint16_t x1;
+  uint16_t y0;
+  uint16_t y1;
+ 
+  x0 = x_start - (width/2);
+  x1 = x_start + (width/2);
+  if( (width & 0x01) == 0x00)
+  {
+    x1--;
+  }
+  
+  y0 = y_start  - (height/2);
+  y1 = y_start  + (height/2) ;
+  if( (height & 0x01) == 0x00)
+  {
+    y1--;
+  }
+  
+  lcd_set_pos(x0, x1, y0, y1);
+	
+  for (i = 0; i < height ; i++)
+  {
+			for (j = 0; j < width ; j++)
+			{
+					lcd_write_data_u16(bColor);
+			}
   }
 }
 

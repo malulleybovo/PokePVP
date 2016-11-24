@@ -32,75 +32,45 @@ main(void)
 	int i = 0;
 	Entity* curr;
   Entity e1 = entity_new();
-  Entity e2 = entity_new();
-  Entity e3 = entity_new();
-  Entity e4 = entity_new();
-  Entity e5 = entity_new();
 	List list;
 	
-	PLL_Init();
+	//PLL_Init();
 	
   initialize_serial_debug();
   
   lcd_config_gpio();
   
   lcd_config_screen();
-  lcd_clear_screen(LCD_COLOR_BLACK);
+  lcd_clear_screen(0x57CA);
 	
-	e1.setPosX(&e1, 60);
-	e1.setPosY(&e1, 60);
-	e1.setSpdX(&e1, 1);
+	e1.setPosX(&e1, 160);
+	e1.setPosY(&e1, 160);
 	e1.setSpdY(&e1, 1);
-	
-	e2.setPosX(&e2, 100);
-	e2.setPosY(&e2, 100);
-	e2.setSpdY(&e2, 1);
-		
-	e3.setPosX(&e3, 140);
-	e3.setPosY(&e3, 140);
-	e3.setSpdX(&e3, 3);
-		
-	e4.setPosX(&e4, 80);
-	e4.setPosY(&e4, 200);
-	e4.setSpdX(&e4, 1);
-	e4.setSpdY(&e4, 2);
-	
-	e5.setPosX(&e5, 200);
-	e5.setPosY(&e5, 300);
 	
 	list = linked_list_new();
 	list.add_at(&list, &e1, 0);
-	list.add_at(&list, &e2, 0);
-	list.add_at(&list, &e3, 2);
-	list.add_at(&list, &e4, 2);
-	list.add_at(&list, &e5, 1);
 	while(i < list.len){
 		curr = (Entity*)list.get_at(&list, i);
 		curr->curr_sprite = sprite_down;
 		curr->setBaseSprite(
 			curr,
-			sprite_left,
-			sprite_right,
 			sprite_up,
-			sprite_down);
+			sprite_down,
+			sprite_left);
 		curr->setMotSprite(
 			curr,
-			sprite_mot_left,
-			sprite_mot_right,
 			sprite_mot_up,
-			sprite_mot_down);
+			sprite_mot_down,
+			sprite_mot_left);
 		i++;
 	}
   // Reach infinite loop
   while(1){
-		if (b>>4) {
+		if (b>>7) {
 			e1.rotate90(&e1, true);
-			e2.rotate90(&e2, true);
-			e3.rotate90(&e3, false);
-			e3.rotate90(&e4, true);
 			b = 0;
 		}
-		if (true) {
+		if (a>50000) {
 			i = 0;
 			while(i < list.len){
 				curr = (Entity*)list.get_at(&list, i);

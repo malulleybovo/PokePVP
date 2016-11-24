@@ -1,0 +1,46 @@
+Clock Frequency
+	Default Core Clock Frequency is 50MHz
+	PLL : Boost Core Clock Frequency up to 80MHz
+
+FPS at 50MHz
+	~3FPS for entire screen update
+	10FPS for 30% of screen
+	20FPS for 15% of screen
+	30FPS for 10% of screen
+
+FPS at 80MHz
+	3 * 80 / 50 = 4.8FPS for entire screen update
+	10FPS for 48% of screen
+	20FPS for 24% of screen
+	30FPS for 16% of screen
+
+SRAM Size (including Heap, Stack, and Global Memory Pool)
+	0x8000 addressable locations => 32768 Bytes = 32kB
+
+Given all sprites are 32x32 px
+	Num bytes each (64 color): 32 * 32 * 6 / 8 = 768
+	Max sprites in SRAM (not counting mallocs): 30000 / 768 =~ 39
+	Max num entities with sprites in SRAM: 39 / 3 = 13
+
+Given all sprites are 24x24 px
+	Num bytes each (64 color): 24 * 24 * 6 / 8 = 432
+	Max sprites in SRAM (not counting mallocs): 30000 / 432 =~ 69
+	Max num entities with sprites in SRAM: 69 / 3 = 23
+
+Game FPS vs Num of Game Obj (20FPS / 80MHz / 24x24)
+	Assume at least 20FPS at 80MHz and 24x24 sprites for entities
+	Max screen area update per second is 24%
+	Total num of pixels updated then is 240 * 320 * 24% = 18432
+	Max num of Entities in game is 18432 / (24 * 24) =~ 42
+
+Game FPS vs Num of Game Obj (20FPS / 80MHz / 32x32)
+	Assume at least 20FPS at 80MHz and 32x32 sprites for entities
+	Max screen area update per second is 24%
+	Total num of pixels updated then is 240 * 320 * 24% = 18432
+	Max num of Entities in game is 18432 / (32 * 32) =~ 18
+
+
+
+
+
+

@@ -264,7 +264,23 @@ void lcd_draw_image(
   uint16_t bColor                   // background color
 );
 uint8_t flipByte(uint8_t b);
-
+void lcd_draw_image_64color(
+  uint16_t x_start,                 // X coordinate starting address
+  uint16_t image_width_bits,        // image width
+  uint16_t y_start,                 // Y coordinate starting address
+  uint16_t image_height_pixels,     // image height
+  const uint8_t *image,             // bitmap of the image
+	bool flipX
+);
+	
+void lcd_clear_rect(
+  uint16_t x_start, 
+  uint16_t image_width_bits, 
+  uint16_t y_start, 
+  uint16_t image_height_pixels,
+	uint16_t bColor
+);
+	
   /*******************************************************************************
 * Function Name: lcd_config_gpio
 ********************************************************************************

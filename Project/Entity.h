@@ -23,8 +23,9 @@ struct _Entity {
 	int16_t dy;
 	
 	bool isMoving;
-	
-	uint8_t action_mask;
+	bool isAtking;
+	int8_t mot_count;
+	int8_t atk_count;
 	
 	const uint8_t *curr_sprite;
 	
@@ -49,35 +50,28 @@ struct _Entity {
 	void (*setSpdX) (Entity* e, uint16_t dx);
 	void (*setPosY) (Entity* e, uint16_t y);
 	void (*setSpdY) (Entity* e, uint16_t dy);
-	void (*updateSprite) (Entity* e);
+	bool (*updateSprite) (Entity* e);
 	void (*setBaseSprite) (
-		Entity* e, 
-		const uint8_t *left,
-		const uint8_t *right,
+		Entity* e,
 		const uint8_t *up,
-		const uint8_t *down);
+		const uint8_t *down, 
+		const uint8_t *left);
 	void (*setMotSprite) (
 		Entity* e, 
-		const uint8_t *left,
-		const uint8_t *right,
 		const uint8_t *up,
-		const uint8_t *down);
+		const uint8_t *down, 
+		const uint8_t *left);
 	void (*setAtkSprite) (
 		Entity* e, 
-		const uint8_t *left,
-		const uint8_t *right,
 		const uint8_t *up,
-		const uint8_t *down);
+		const uint8_t *down, 
+		const uint8_t *left);
 	
 };
 
 #define SPRITE_SIZE 24
-#define ATK_ACTION_M 0xf0
-#define ACTV_ATK_ACTION_M 0x80
-#define ATK_ACTION_M_STEP 0x10
-#define MOT_ACTION_M 0x0f
-#define ACTV_MOT_ACTION_M 0x08
-#define MOT_ACTION_M_STEP 0x01
+#define ANIM_FREQ 32
+#define ANIM_TRANSITION 16
 
 /******************************************************************************* 
 *	Constructor
@@ -94,24 +88,21 @@ void entity_set_pos_x(Entity* e, uint16_t x);
 void entity_set_spd_x(Entity* e, uint16_t dx);
 void entity_set_pos_y(Entity* e, uint16_t y);
 void entity_set_spd_y(Entity* e, uint16_t dy);
-void entity_update_sprite(Entity* e);
+bool entity_update_sprite(Entity* e);
 void entity_set_base_sprite(
-	Entity* e, 
-	const uint8_t *left,
-	const uint8_t *right,
+	Entity* e,
 	const uint8_t *up,
-	const uint8_t *down);
+	const uint8_t *down, 
+	const uint8_t *left);
 void entity_set_mot_sprite(
-	Entity* e, 
-	const uint8_t *left,
-	const uint8_t *right,
+	Entity* e,
 	const uint8_t *up,
-	const uint8_t *down);
+	const uint8_t *down, 
+	const uint8_t *left);
 void entity_set_atk_sprite(
-	Entity* e, 
-	const uint8_t *left,
-	const uint8_t *right,
+	Entity* e,
 	const uint8_t *up,
-	const uint8_t *down);
+	const uint8_t *down, 
+	const uint8_t *left);
 
 #endif

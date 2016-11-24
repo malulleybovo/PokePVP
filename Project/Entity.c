@@ -4,6 +4,7 @@
 Entity entity_new () {
 	Entity* newEntity = malloc(sizeof(Entity));
 	newEntity->isMoving = true; // So that first draw does not skip the lcd draw
+	newEntity->isAtking = false;
 	newEntity->draw = entity_draw;
 	newEntity->rotate90 = entity_rotate90;
 	newEntity->setPosX = entity_set_pos_x;
@@ -18,22 +19,23 @@ Entity entity_new () {
 }
 
 void entity_draw(Entity* e){
+	bool isFacingRight = false;
+	
 	if (!e->isMoving && e->dx == 0 && e->dy == 0) {
 		return;
 	}
 	
+	// Update motion state
 	e->isMoving = e->dx || e->dy;
 	
 	// Clear previous location of entity if it was displayed on screen
 	if (e->x <= ROWS + SPRITE_SIZE && e->y <= COLS + SPRITE_SIZE) {
-		lcd_draw_image(
+		lcd_clear_rect(
 										e->x,                // X Center Point
 										SPRITE_SIZE,   // Image Horizontal Width
 										e->y,                // Y Center Point
 										SPRITE_SIZE,  // Image Vertical Height
-										e->curr_sprite,       // Image
-										LCD_COLOR_BLACK,      // Foreground Color
-										LCD_COLOR_BLACK     // Background Color
+										0x57CA
 									);
 	}
 	
@@ -43,15 +45,14 @@ void entity_draw(Entity* e){
 	
 	// Display entity in new location if it is within the screen limit
 	if (e->x <= ROWS + SPRITE_SIZE && e->y <= COLS + SPRITE_SIZE) {
-		e->updateSprite(e);
-		lcd_draw_image(
+		isFacingRight = e->updateSprite(e);
+		lcd_draw_image_64color(
 										e->x,                // X Center Point
 										SPRITE_SIZE,   // Image Horizontal Width
 										e->y,                // Y Center Point
 										SPRITE_SIZE,  // Image Vertical Height
 										e->curr_sprite,       // Image
-										LCD_COLOR_GREEN,      // Foreground Color
-										LCD_COLOR_BLACK     // Background Color
+										isFacingRight
 									);
 	}
 }
@@ -81,114 +82,110 @@ void entity_set_pos_y(Entity* e, uint16_t y){
 void entity_set_spd_y(Entity* e, uint16_t dy){
 	e->dy = dy;
 }
-void entity_update_sprite(Entity* e){
+bool entity_update_sprite(Entity* e){
+	int16_t zero = 0;
+	
 	uint16_t x_len = e->dx;
 	uint16_t y_len = e->dy;
-	if (!e->dx && !e->dy) {
-		e->action_mask &= ~MOT_ACTION_M;
-		return;
-	}
 	
-	if (!(e->action_mask & MOT_ACTION_M)) {
-		e->action_mask |= MOT_ACTION_M;
+	if (e->isAtking) {
+		// Initialize / update attack animation
+		if ((e->atk_count / ANIM_FREQ)) {
+			e->isAtking = false;
+			e->atk_count = 0;
+		}
+		else {
+			e->atk_count += 1;
+		}
+	}
+	else if (e->isMoving) {
+		// Initialize / update motion animation
+		if ((e->mot_count / ANIM_FREQ)) {
+			e->mot_count = 0;
+		}
+		else {
+			e->mot_count += 1;
+		}
 	}
 	else {
-		e->action_mask -= MOT_ACTION_M_STEP;
+		// Reset animation while stationary
+		e->mot_count = 0;
+		e->atk_count = 0;
+		return false;
 	}
 	
-	if (e->dx > 0x7ff) {
+	if (e->dx < zero) {
 		x_len= ~x_len + 1;
 	}
-	if (e->dy > 0x7ff) {
+	if (e->dy < zero) {
 		y_len= ~y_len + 1;
 	}
 	if (x_len >= y_len) {
-		if (e->dx > 0x7ff) {
-			if (e->action_mask & ACTV_ATK_ACTION_M){
-				e->action_mask -= ATK_ACTION_M_STEP;
-				
-				e->curr_sprite = e->sprite_atk_r;
-			}
-			else if (e->action_mask & ACTV_MOT_ACTION_M){
-				e->curr_sprite = e->sprite_mot_r;
-			}
-			else {
-				e->curr_sprite = e->sprite_base_r;
-			}
+		if ((e->atk_count / ANIM_TRANSITION)){
+			e->curr_sprite = e->sprite_atk_l;
+		}
+		else if ((e->mot_count / ANIM_TRANSITION)){
+			e->curr_sprite = e->sprite_mot_l;
 		}
 		else {
-			if (e->action_mask & ACTV_ATK_ACTION_M){
-				e->action_mask -= ATK_ACTION_M_STEP;
-				
-				e->curr_sprite = e->sprite_atk_l;
-			}
-			else if (e->action_mask & ACTV_MOT_ACTION_M){
-				e->curr_sprite = e->sprite_mot_l;
-			}
-			else {
-				e->curr_sprite = e->sprite_base_l;
-			}
+			e->curr_sprite = e->sprite_base_l;
+		}
+		
+		// Return true if player is facing right
+		if (e->dx >= zero) {
+			return true;
 		}
 	}
 	else {
-		if (e->dy > 0x7ff) {
-			if (e->action_mask & ACTV_ATK_ACTION_M){
-				e->action_mask -= ATK_ACTION_M_STEP;
-				
-				e->curr_sprite = e->sprite_atk_d;
-			}
-			else if (e->action_mask & ACTV_MOT_ACTION_M){
-				e->curr_sprite = e->sprite_mot_d;
-			}
-			else {
-				e->curr_sprite = e->sprite_base_d;
-			}
-		}
-		else {
-			if (e->action_mask & ACTV_ATK_ACTION_M){
-				e->action_mask -= ATK_ACTION_M_STEP;
-				
+		if (e->dy < zero) {
+			if ((e->atk_count / ANIM_TRANSITION)){
 				e->curr_sprite = e->sprite_atk_u;
 			}
-			else if (e->action_mask & ACTV_MOT_ACTION_M){
+			else if ((e->mot_count / ANIM_TRANSITION)){
 				e->curr_sprite = e->sprite_mot_u;
 			}
 			else {
 				e->curr_sprite = e->sprite_base_u;
 			}
 		}
+		else {
+			if ((e->atk_count / ANIM_TRANSITION)){
+				e->curr_sprite = e->sprite_atk_d;
+			}
+			else if ((e->mot_count / ANIM_TRANSITION)){
+				e->curr_sprite = e->sprite_mot_d;
+			}
+			else {
+				e->curr_sprite = e->sprite_base_d;
+			}
+		}
 	}
+	return false;
 }
 void entity_set_base_sprite(
 	Entity* e, 
-	const uint8_t *left,
-	const uint8_t *right,
 	const uint8_t *up,
-	const uint8_t *down){
-	e->sprite_base_l = left;
-	e->sprite_base_r = right;
+	const uint8_t *down, 
+	const uint8_t *left){
 	e->sprite_base_u = up;
 	e->sprite_base_d = down;
+	e->sprite_base_l = left;
 }
 void entity_set_mot_sprite(
 	Entity* e, 
-	const uint8_t *left,
-	const uint8_t *right,
 	const uint8_t *up,
-	const uint8_t *down){
-	e->sprite_mot_l = left;
-	e->sprite_mot_r = right;
+	const uint8_t *down, 
+	const uint8_t *left){
 	e->sprite_mot_u = up;
 	e->sprite_mot_d = down;
+	e->sprite_mot_l = left;
 }
 void entity_set_atk_sprite(
 	Entity* e, 
-	const uint8_t *left,
-	const uint8_t *right,
 	const uint8_t *up,
-	const uint8_t *down){
-	e->sprite_atk_l = left;
-	e->sprite_atk_r = right;
+	const uint8_t *down, 
+	const uint8_t *left){
 	e->sprite_atk_u = up;
 	e->sprite_atk_d = down;
+	e->sprite_atk_l = left;
 }

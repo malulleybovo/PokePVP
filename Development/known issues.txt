@@ -1,0 +1,13 @@
+/*******************************************************************************
+* KNOWN ISSUES IN POKEPVP PROJECT (BUGS / PROBLEMS TO BE FIXED)
+*******************************************************************************/
+
+LCD {
+    - Displaying game objects near boarders of screen causes objects not to be
+      displayed correctly
+}
+
+ANALOG INPUT SAMPLING {
+    - Polling-based sampling may cause damage to game FPS due to busy waiting
+}
+

@@ -24,11 +24,6 @@
 
 #include <stdint.h>
 
-extern const uint8_t imageBitmapsRedMask[];
-extern const uint8_t imageBitmapsGreenMask[];
-extern const uint8_t imageBitmapsBlueMask[];
-extern const uint8_t imageWidthPixels;
-extern const uint8_t imageHeightPixels;
 extern const uint8_t sprite_up[];
 extern const uint8_t sprite_down[];
 extern const uint8_t sprite_left[];
@@ -37,5 +32,11 @@ extern const uint8_t sprite_mot_up[];
 extern const uint8_t sprite_mot_down[];
 extern const uint8_t sprite_mot_left[];
 extern const uint8_t sprite_mot_right[];
+extern const uint8_t sprite_up_2 [];
+extern const uint8_t sprite_mot_up_2 [];
+extern const uint8_t sprite_down_2 [];
+extern const uint8_t sprite_mot_down_2 [];
+extern const uint8_t sprite_left_2 [];
+extern const uint8_t sprite_mot_left_2 [];
 
 #endif

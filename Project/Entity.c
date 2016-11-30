@@ -23,11 +23,15 @@ void entity_draw(Entity* e, int camPosX, int camPosY){
 	}
 	
 	// Clear previous location of entity if it was displayed on screen
-	if ((e->x - camPosX) <= ROWS + SPRITE_SIZE && (e->y - camPosY) <= COLS + SPRITE_SIZE) {
+	if ((e->x - camPosX - ((ROWS + SPRITE_SIZE) / 2)) >= 0
+		&& (e->x - camPosX - ((ROWS - SPRITE_SIZE) / 2)) < ROWS
+		&& (e->y - camPosY - ((COLS + SPRITE_SIZE) / 2)) >= 0
+		&& (e->y - camPosY - ((COLS - SPRITE_SIZE) / 2)) < COLS) {
+			
 		lcd_clear_rect(
-										e->x - camPosX,       // X Center Point
+										e->x - camPosX - (ROWS / 2), // X Center Point
 										SPRITE_SIZE,   				// Image Horizontal Width
-										e->y - camPosY,       // Y Center Point
+										e->y - camPosY - (COLS / 2), // Y Center Point
 										SPRITE_SIZE,  				// Image Vertical Height
 										0x57CA
 									);
@@ -38,7 +42,11 @@ void entity_draw(Entity* e, int camPosX, int camPosY){
 	e->y = e->y + e->dy;
 	
 	// Display entity in new location if it is within the screen limit
-	if ((e->x - camPosX) <= ROWS + SPRITE_SIZE && (e->y - camPosY) <= COLS + SPRITE_SIZE) {
+	if ((e->x - camPosX - ((ROWS + SPRITE_SIZE) / 2)) >= 0
+		&& (e->x - camPosX - ((ROWS - SPRITE_SIZE) / 2)) < ROWS 
+		&& (e->y - camPosY - ((COLS + SPRITE_SIZE) / 2)) >= 0
+		&& (e->y - camPosY - ((COLS - SPRITE_SIZE) / 2)) < COLS) {
+			
 		if (e->status & ENTITY_MOVING_STATUS_M) {
 			if (entity_update_sprite(e)) {
 				e->status |= ENTITY_FACING_RIGHT_STATUS_M;
@@ -48,9 +56,9 @@ void entity_draw(Entity* e, int camPosX, int camPosY){
 			}
 		}
 		lcd_draw_image_64color(
-										e->x - camPosX,       // X Center Point
+										e->x - camPosX - (ROWS / 2), // X Center Point
 										SPRITE_SIZE,   				// Image Horizontal Width
-										e->y - camPosY,       // Y Center Point
+										e->y - camPosY - (COLS / 2), // Y Center Point
 										SPRITE_SIZE,  				// Image Vertical Height
 										e->curr_sprite,       // Image
 										e->status & ENTITY_FACING_RIGHT_STATUS_M

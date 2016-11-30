@@ -37,6 +37,7 @@ main(void)
   Entity e2 = entity_new();
   Entity e3 = entity_new();
   Entity e4 = entity_new();
+  Entity e5 = entity_new();
 	List list;
 	
 	PLL_Init();
@@ -57,25 +58,44 @@ main(void)
 	e3.y = 160;
 	e4.x = 160;
 	e4.y = 40;
+	e5.x = 100;
+	e5.y = 100;
 	
 	list = linked_list_new();
 	linked_list_add(&list, &e1);
 	linked_list_add(&list, &e2);
 	linked_list_add(&list, &e3);
 	linked_list_add(&list, &e4);
+	linked_list_add(&list, &e5);
 	while(i < list.len){
 		curr = (Entity*)linked_list_get_at(&list, i);
 		curr->curr_sprite = sprite_down;
-		entity_set_base_sprite(
-			curr,
-			sprite_up,
-			sprite_down,
-			sprite_left);
-		entity_set_mot_sprite(
-			curr,
-			sprite_mot_up,
-			sprite_mot_down,
-			sprite_mot_left);
+		if (i%2) {
+			curr->curr_sprite = sprite_down;
+			entity_set_base_sprite(
+				curr,
+				sprite_up,
+				sprite_down,
+				sprite_left);
+			entity_set_mot_sprite(
+				curr,
+				sprite_mot_up,
+				sprite_mot_down,
+				sprite_mot_left);
+		}
+		else {
+			curr->curr_sprite = sprite_down_2;
+			entity_set_base_sprite(
+				curr,
+				sprite_up_2,
+				sprite_down_2,
+				sprite_left_2);
+			entity_set_mot_sprite(
+				curr,
+				sprite_mot_up_2,
+				sprite_mot_down_2,
+				sprite_mot_left_2);
+		}
 		i++;
 	}
   // Reach infinite loop
@@ -107,7 +127,7 @@ main(void)
 					}
 				}
 				
-				entity_draw(curr, 0, 0);
+				entity_draw(curr, - (ROWS / 2), - (COLS / 2));
 				i++;
 			}
 			a = 0;

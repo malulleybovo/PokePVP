@@ -3,38 +3,32 @@
 
 Entity entity_new () {
 	Entity* newEntity = malloc(sizeof(Entity));
-	newEntity->isMoving = true; // So that first draw does not skip the lcd draw
-	newEntity->isAtking = false;
-	newEntity->draw = entity_draw;
-	newEntity->rotate90 = entity_rotate90;
-	newEntity->setPosX = entity_set_pos_x;
-	newEntity->setPosY = entity_set_pos_y;
-	newEntity->setSpdX = entity_set_spd_x;
-	newEntity->setSpdY = entity_set_spd_y;
-	newEntity->updateSprite = entity_update_sprite;
-	newEntity->setBaseSprite = entity_set_base_sprite;
-	newEntity->setMotSprite = entity_set_mot_sprite;
-	newEntity->setAtkSprite = entity_set_atk_sprite;
+	// set isMoving bit so that first draw does not skip the lcd draw
+	newEntity->status = 0x1;
 	return *newEntity;
 }
 
-void entity_draw(Entity* e){
-	bool isFacingRight = false;
+void entity_draw(Entity* e, int camPosX, int camPosY){
 	
-	if (!e->isMoving && e->dx == 0 && e->dy == 0) {
+	if (!(e->status & ENTITY_MOVING_STATUS_M) && e->dx == 0 && e->dy == 0) {
 		return;
 	}
 	
 	// Update motion state
-	e->isMoving = e->dx || e->dy;
+	if (e->dx || e->dy) {
+		e->status |= ENTITY_MOVING_STATUS_M;
+	}
+	else {
+		e->status &= ~ENTITY_MOVING_STATUS_M;
+	}
 	
 	// Clear previous location of entity if it was displayed on screen
 	if (e->x <= ROWS + SPRITE_SIZE && e->y <= COLS + SPRITE_SIZE) {
 		lcd_clear_rect(
-										e->x,                // X Center Point
-										SPRITE_SIZE,   // Image Horizontal Width
-										e->y,                // Y Center Point
-										SPRITE_SIZE,  // Image Vertical Height
+										e->x - camPosX,       // X Center Point
+										SPRITE_SIZE,   				// Image Horizontal Width
+										e->y - camPosY,       // Y Center Point
+										SPRITE_SIZE,  				// Image Vertical Height
 										0x57CA
 									);
 	}
@@ -45,20 +39,25 @@ void entity_draw(Entity* e){
 	
 	// Display entity in new location if it is within the screen limit
 	if (e->x <= ROWS + SPRITE_SIZE && e->y <= COLS + SPRITE_SIZE) {
-		isFacingRight = e->updateSprite(e);
+		if (e->status & ENTITY_MOVING_STATUS_M) {
+			if (entity_update_sprite(e)) {
+				e->status |= ENTITY_FACING_RIGHT_STATUS_M;
+			}
+			else {
+				e->status &= ~ENTITY_FACING_RIGHT_STATUS_M;
+			}
+		}
 		lcd_draw_image_64color(
-										e->x,                // X Center Point
-										SPRITE_SIZE,   // Image Horizontal Width
-										e->y,                // Y Center Point
-										SPRITE_SIZE,  // Image Vertical Height
+										e->x - camPosX,       // X Center Point
+										SPRITE_SIZE,   				// Image Horizontal Width
+										e->y - camPosY,       // Y Center Point
+										SPRITE_SIZE,  				// Image Vertical Height
 										e->curr_sprite,       // Image
-										isFacingRight
+										e->status & ENTITY_FACING_RIGHT_STATUS_M
 									);
 	}
 }
-void entity_set_id(Entity* e, char* id){
-	e->id = id;
-}
+
 void entity_rotate90(Entity* e, bool isClkwise){
 	uint16_t tmp = e->dx;
 	if (isClkwise) {
@@ -70,35 +69,23 @@ void entity_rotate90(Entity* e, bool isClkwise){
 		e->dy = ~tmp + 1;
 	}
 }
-void entity_set_pos_x(Entity* e, uint16_t x){
-	e->x = x;
-}
-void entity_set_spd_x(Entity* e, uint16_t dx){
-	e->dx = dx;
-}
-void entity_set_pos_y(Entity* e, uint16_t y){
-	e->y = y;
-}
-void entity_set_spd_y(Entity* e, uint16_t dy){
-	e->dy = dy;
-}
 bool entity_update_sprite(Entity* e){
 	int16_t zero = 0;
 	
 	uint16_t x_len = e->dx;
 	uint16_t y_len = e->dy;
 	
-	if (e->isAtking) {
+	if (e->status & ENTITY_ATKING_STATUS_M) {
 		// Initialize / update attack animation
 		if ((e->atk_count / ANIM_FREQ)) {
-			e->isAtking = false;
+			e->status &= ~ENTITY_ATKING_STATUS_M;
 			e->atk_count = 0;
 		}
 		else {
 			e->atk_count += 1;
 		}
 	}
-	else if (e->isMoving) {
+	else if (e->status & ENTITY_MOVING_STATUS_M) {
 		// Initialize / update motion animation
 		if ((e->mot_count / ANIM_FREQ)) {
 			e->mot_count = 0;

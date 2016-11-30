@@ -22,8 +22,6 @@ struct _Player {
 	
 	Entity* body;
 	
-	void (*setBody) (Player* player, Entity* e);
-	
 };
 
 /******************************************************************************* 
@@ -34,7 +32,7 @@ Player player_new(void);
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void player_set_body(Player* player, Entity* e);
+void player_render(Player* player, int camPosX, int camPosY);
 // TODO other functions
 
 #endif

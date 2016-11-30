@@ -21,8 +21,6 @@ struct _Spell {
 	
 	Entity* body;
 	
-	void (*setBody) (Spell* spell, Entity* e);
-	
 };
 
 /******************************************************************************* 
@@ -33,7 +31,7 @@ Spell spell_new(void);
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void spell_set_body(Spell* spell, Entity* e);
+void spell_render(Spell* spell, int camPosX, int camPosY);
 // TODO other functions
 
 #endif

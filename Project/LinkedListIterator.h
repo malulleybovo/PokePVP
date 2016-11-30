@@ -1,44 +1,33 @@
-#ifndef __LINKED_LIST_H__
-#define __LINKED_LIST_H__
+#ifndef __LINKED_LIST_ITERATOR_H__
+#define __LINKED_LIST_ITERATOR_H__
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#include <stdbool.h>
+#include "LinkedList.h"
 
 /******************************************************************************* 
-*	Node Definition
+*	List Iterator Definition
 *******************************************************************************/
-typedef struct node_t Node;
-struct node_t	{
-    void* val;
-    Node * next;
-};
-
-/******************************************************************************* 
-*	List Definition
-*******************************************************************************/
-typedef struct list_t List;
-struct list_t	{
-    Node* head;
-		Node* tail;
+typedef struct list_iterator_t ListIterator;
+struct list_iterator_t	{
     int len;
+		int index;
+		Node* curr;
 };
 
 /******************************************************************************* 
 *	Constructor
 *******************************************************************************/
-Node* node_new(void* val);
-List linked_list_new(void);
+ListIterator* linked_list_iterator_new(List* list);
+
+/******************************************************************************* 
+*	Destructor
+*******************************************************************************/
+void linked_list_iterator_free(ListIterator* itr);
 
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void linked_list_add(List* l, void* val);
-void linked_list_add_at(List* l, void* val, int i);
-void* linked_list_remove(List* l);
-void* linked_list_remove_at(List* l, int i);
-void* linked_list_get_at(List* l, int i);
-void* linked_list_search(List* l, void* val);
+bool linked_list_iterator_has_next(ListIterator* itr);
+void* linked_list_iterator_next(ListIterator* itr);
 
 #endif

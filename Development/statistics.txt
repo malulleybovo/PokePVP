@@ -1,3 +1,7 @@
+/*******************************************************************************
+* STATISTICS & LIMITATIONS
+*******************************************************************************/
+
 Clock Frequency
 	Default Core Clock Frequency is 50MHz
 	PLL : Boost Core Clock Frequency up to 80MHz

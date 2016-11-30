@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "RenderMan.h"
+#include "World.h"
 
 /******************************************************************************* 
 *	Definition

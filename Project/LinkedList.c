@@ -15,16 +15,10 @@ List linked_list_new(){
 	list->tail = NULL;
 	list->len = 0;
 	
-	list->add = linkedlist_add;
-	list->add_at = linked_list_add_at;
-	list->remove = linked_list_remove;
-	list->remove_at = linked_list_remove_at;
-	list->get_at = linked_list_get_at;
-	
 	return *list;
 }
 
-void linkedlist_add(List* l, void* val){
+void linked_list_add(List* l, void* val){
 	Node* newNode = node_new(val);
 	
 	if (l->len == 0){
@@ -47,7 +41,7 @@ void linked_list_add_at(List* l, void* val, int i){
 		return;
 	}
 	else if (i == l->len){
-		l->add(l, val);
+		linked_list_add(l, val);
 		return;
 	}
 	
@@ -108,7 +102,7 @@ void* linked_list_remove_at(List* l, int i){
 		return NULL;
 	}
 	else if (i == l->len - 1){
-		return l->remove(l);
+		return linked_list_remove(l);
 	}
 	
 	// Get (i - 1)th node

@@ -7,7 +7,9 @@
 #include <string.h>
 
 #include "LinkedList.h"
-#include "Entity.h"
+#include "LinkedListIterator.h"
+#include "Player.h"
+#include "Spell.h"
 
 /******************************************************************************* 
 *	Definition
@@ -15,6 +17,7 @@
 typedef struct _Scene Scene;
 struct _Scene {
 	
+	Player* mainPlayer;
 	List players;
 	List spells;
 	
@@ -28,9 +31,9 @@ Scene scene_new(void);
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void scene_add_player(Scene* scene, Entity* entity);
-void scene_remove_player(Scene* scene, Entity* entity);
-void scene_add_spell(Scene* scene, Entity* entity);
-void scene_remove_spell(Scene* scene, Entity* entity);
+void scene_add_player(Scene* scene, Player* player);
+void scene_remove_player(Scene* scene, Player* player);
+void scene_add_spell(Scene* scene, Spell* spell);
+void scene_remove_spell(Scene* scene, Spell* spell);
 
 #endif

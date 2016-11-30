@@ -30,34 +30,48 @@ main(void)
 	int a = 0;
 	int b = 0;
 	int i = 0;
+	uint16_t spdX = 0x7d7;
+	uint16_t spdY = 0x7d7;
 	Entity* curr;
   Entity e1 = entity_new();
+  Entity e2 = entity_new();
+  Entity e3 = entity_new();
+  Entity e4 = entity_new();
 	List list;
 	
-	//PLL_Init();
+	PLL_Init();
 	
   initialize_serial_debug();
+  ps2_initialize(); 
   
   lcd_config_gpio();
   
   lcd_config_screen();
   lcd_clear_screen(0x57CA);
 	
-	e1.setPosX(&e1, 160);
-	e1.setPosY(&e1, 160);
-	e1.setSpdY(&e1, 1);
+	e1.x = 160;
+	e1.y = 160;
+	e2.x = 40;
+	e2.y = 40;
+	e3.x = 40;
+	e3.y = 160;
+	e4.x = 160;
+	e4.y = 40;
 	
 	list = linked_list_new();
-	list.add_at(&list, &e1, 0);
+	linked_list_add(&list, &e1);
+	linked_list_add(&list, &e2);
+	linked_list_add(&list, &e3);
+	linked_list_add(&list, &e4);
 	while(i < list.len){
-		curr = (Entity*)list.get_at(&list, i);
+		curr = (Entity*)linked_list_get_at(&list, i);
 		curr->curr_sprite = sprite_down;
-		curr->setBaseSprite(
+		entity_set_base_sprite(
 			curr,
 			sprite_up,
 			sprite_down,
 			sprite_left);
-		curr->setMotSprite(
+		entity_set_mot_sprite(
 			curr,
 			sprite_mot_up,
 			sprite_mot_down,
@@ -66,15 +80,34 @@ main(void)
 	}
   // Reach infinite loop
   while(1){
-		if (b>>7) {
-			e1.rotate90(&e1, true);
+		if (b>>2) {
+			spdX = ps2_get_x();
+			spdY = ps2_get_y();
 			b = 0;
 		}
 		if (a>50000) {
 			i = 0;
 			while(i < list.len){
-				curr = (Entity*)list.get_at(&list, i);
-				curr->draw(curr);
+				curr = (Entity*)linked_list_get_at(&list, i);
+				
+				curr->dx = 0;
+				curr->dy = 0;
+				if(spdX > 0xE00){
+					curr->dx = 1;
+				}
+				else if(spdX < 0x100) {
+					curr->dx = -1;
+				}
+				else {
+					if(spdY > 0xE00){
+						curr->dy = 1;
+					}
+					else if(spdY < 0x100) {
+						curr->dy = -1;
+					}
+				}
+				
+				entity_draw(curr, 0, 0);
 				i++;
 			}
 			a = 0;

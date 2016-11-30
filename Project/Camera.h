@@ -13,7 +13,7 @@ typedef struct _Camera Camera;
 struct _Camera {
 	
 	int x;
-	int y;	
+	int y;
 	
 };
 
@@ -25,7 +25,6 @@ Camera camera_new(void);
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void camera_set_x(Camera* camera, int x);
-void camera_set_y(Camera* camera, int y);
+void camera_update_pos(Camera* c, int x, int y);
 
 #endif

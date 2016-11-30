@@ -6,7 +6,8 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "World.h"
+#include "Scene.h"
+#include "Camera.h"
 
 /******************************************************************************* 
 *	Definition
@@ -14,10 +15,8 @@
 typedef struct _RenderMan RenderMan;
 struct _RenderMan {
 	
-	World* world;
-	
-	void (*setWorld) (RenderMan* renderMan, World* world);
-	void (*render) (void);
+	Scene* scene;
+	Camera* camera;
 	
 };
 
@@ -29,7 +28,6 @@ RenderMan render_man_new(void);
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void render_man_set_world(RenderMan* renderMan, World* world);
-void render_man_render(void);
+void render_man_render(RenderMan* renderman);
 
 #endif

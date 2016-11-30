@@ -28,6 +28,8 @@
 
 #include "TM4C123.h"
 #include "gpio_port.h"
+#include "adc.h"
+#include "ps2.h"
 #include "PLL.h"
 #include "lcd.h"
 #include "lcd_images.h"

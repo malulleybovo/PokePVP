@@ -23,7 +23,7 @@ void entity_draw(Entity* e, int camPosX, int camPosY){
 	}
 	
 	// Clear previous location of entity if it was displayed on screen
-	if (e->x <= ROWS + SPRITE_SIZE && e->y <= COLS + SPRITE_SIZE) {
+	if ((e->x - camPosX) <= ROWS + SPRITE_SIZE && (e->y - camPosY) <= COLS + SPRITE_SIZE) {
 		lcd_clear_rect(
 										e->x - camPosX,       // X Center Point
 										SPRITE_SIZE,   				// Image Horizontal Width
@@ -38,7 +38,7 @@ void entity_draw(Entity* e, int camPosX, int camPosY){
 	e->y = e->y + e->dy;
 	
 	// Display entity in new location if it is within the screen limit
-	if (e->x <= ROWS + SPRITE_SIZE && e->y <= COLS + SPRITE_SIZE) {
+	if ((e->x - camPosX) <= ROWS + SPRITE_SIZE && (e->y - camPosY) <= COLS + SPRITE_SIZE) {
 		if (e->status & ENTITY_MOVING_STATUS_M) {
 			if (entity_update_sprite(e)) {
 				e->status |= ENTITY_FACING_RIGHT_STATUS_M;

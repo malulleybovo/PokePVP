@@ -18,15 +18,15 @@ typedef struct _Scene Scene;
 struct _Scene {
 	
 	Player* mainPlayer;
-	List players;
-	List spells;
+	List* players;
+	List* spells;
 	
 };
 
 /******************************************************************************* 
 *	Constructor
 *******************************************************************************/
-Scene scene_new(void);
+Scene* scene_new(void);
 
 /******************************************************************************* 
 *	Functions

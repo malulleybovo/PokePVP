@@ -57,14 +57,17 @@ struct _Entity {
 /******************************************************************************* 
 *	Constructor
 *******************************************************************************/
-Entity entity_new(void);
+Entity* entity_new(void);
 
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void entity_draw(Entity* e, int camPosX, int camPosY);
+void entity_draw(Entity* e,
+	int camX, int camY,
+	int camPrevX, int camPrevY);
 void entity_rotate90(Entity* e, bool isClkwise);
 bool entity_update_sprite(Entity* e);
+bool entity_has_collided(Entity* e1, Entity* e2);
 void entity_set_base_sprite(
 	Entity* e,
 	const uint8_t *up,

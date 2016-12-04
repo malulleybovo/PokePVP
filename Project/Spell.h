@@ -14,9 +14,6 @@
 typedef struct _Spell Spell;
 struct _Spell {
 	
-	int x;
-	int y;
-	
 	bool hasCollided;
 	
 	Entity* body;
@@ -26,12 +23,14 @@ struct _Spell {
 /******************************************************************************* 
 *	Constructor
 *******************************************************************************/
-Spell spell_new(void);
+Spell* spell_new(void);
 
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void spell_render(Spell* spell, int camPosX, int camPosY);
+void spell_render(Spell* spell, 
+	int camX, int camY, 
+	int camPrevX, int camPrevY);
 // TODO other functions
 
 #endif

@@ -36,6 +36,7 @@
 #include "validate.h"
 #include "Entity.h"
 #include "LinkedList.h"
+#include "Engine.h"
 
 extern void serialDebugInit(void);
 

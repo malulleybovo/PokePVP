@@ -1,33 +1,49 @@
-#ifndef __RENDER_MAN_H__
-#define __RENDER_MAN_H__
+#ifndef __SPRITE_H__
+#define __SPRITE_H__
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 
-#include "Scene.h"
-#include "Camera.h"
+#include "Entity.h"
 
 /******************************************************************************* 
 *	Definition
 *******************************************************************************/
-typedef struct _RenderMan RenderMan;
-struct _RenderMan {
+typedef struct _Sprite Sprite;
+struct _Sprite {
 	
-	Scene** scene;
-	Camera** camera;
+	const uint8_t *base_u;
+	const uint8_t *base_d;
+	const uint8_t *base_l;
+	
+	const uint8_t *mot_u;
+	const uint8_t *mot_d;
+	const uint8_t *mot_l;
+	
+	const uint8_t *atk_u;
+	const uint8_t *atk_d;
+	const uint8_t *atk_l;
 	
 };
 
 /******************************************************************************* 
 *	Constructor
 *******************************************************************************/
-RenderMan* render_man_new(void);
+Sprite* sprite_new(
+	const uint8_t *b_u, 
+	const uint8_t *b_d, 
+	const uint8_t *b_l, 
+	const uint8_t *m_u, 
+	const uint8_t *m_d, 
+	const uint8_t *m_l, 
+	const uint8_t *a_u,
+	const uint8_t *a_d, 
+	const uint8_t *a_l);
 
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void render_man_render(RenderMan* renderman);
 
 #endif

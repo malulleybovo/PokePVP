@@ -30,15 +30,13 @@ main(void)
 	int a = 0;
 	int b = 0;
 	int i = 0;
+	int bo = 0;
 	uint16_t spdX = 0x7d7;
 	uint16_t spdY = 0x7d7;
-	Entity* curr;
-  Entity e1 = entity_new();
-  Entity e2 = entity_new();
-  Entity e3 = entity_new();
-  Entity e4 = entity_new();
-  Entity e5 = entity_new();
-	List list;
+	Player* curr;
+	Player* enemy;
+	Player* enemy2;
+	Engine* engine = engine_new();
 	
 	PLL_Init();
 	
@@ -50,54 +48,54 @@ main(void)
   lcd_config_screen();
   lcd_clear_screen(0x57CA);
 	
-	e1.x = 160;
-	e1.y = 160;
-	e2.x = 40;
-	e2.y = 40;
-	e3.x = 40;
-	e3.y = 160;
-	e4.x = 160;
-	e4.y = 40;
-	e5.x = 100;
-	e5.y = 100;
+	engine_init(engine);
+	curr = engine_setup_main_player(engine, 
+		"P1", 
+		40, // x
+		40, // y
+		40, // hp
+		10, // pp
+		sprite_up,
+		sprite_down,
+		sprite_left,
+		sprite_mot_up,
+		sprite_mot_down,
+		sprite_mot_left,
+		NULL,
+		NULL,
+		NULL);
+		
+	enemy = engine_new_player(engine, 
+		"P2", 
+		20, 
+		-40, 
+		40, 
+		10, 
+		sprite_up_2,
+		sprite_down_2,
+		sprite_left_2,
+		sprite_mot_up_2,
+		sprite_mot_down_2,
+		sprite_mot_left_2,
+		NULL,
+		NULL,
+		NULL);
+	enemy2 = engine_new_player(engine, 
+		"P3", 
+		80, 
+		-40, 
+		40, 
+		10, 
+		sprite_up_2,
+		sprite_down_2,
+		sprite_left_2,
+		sprite_mot_up_2,
+		sprite_mot_down_2,
+		sprite_mot_left_2,
+		NULL,
+		NULL,
+		NULL);
 	
-	list = linked_list_new();
-	linked_list_add(&list, &e1);
-	linked_list_add(&list, &e2);
-	linked_list_add(&list, &e3);
-	linked_list_add(&list, &e4);
-	linked_list_add(&list, &e5);
-	while(i < list.len){
-		curr = (Entity*)linked_list_get_at(&list, i);
-		curr->curr_sprite = sprite_down;
-		if (i%2) {
-			curr->curr_sprite = sprite_down;
-			entity_set_base_sprite(
-				curr,
-				sprite_up,
-				sprite_down,
-				sprite_left);
-			entity_set_mot_sprite(
-				curr,
-				sprite_mot_up,
-				sprite_mot_down,
-				sprite_mot_left);
-		}
-		else {
-			curr->curr_sprite = sprite_down_2;
-			entity_set_base_sprite(
-				curr,
-				sprite_up_2,
-				sprite_down_2,
-				sprite_left_2);
-			entity_set_mot_sprite(
-				curr,
-				sprite_mot_up_2,
-				sprite_mot_down_2,
-				sprite_mot_left_2);
-		}
-		i++;
-	}
   // Reach infinite loop
   while(1){
 		if (b>>2) {
@@ -105,33 +103,39 @@ main(void)
 			spdY = ps2_get_y();
 			b = 0;
 		}
-		if (a>50000) {
+		if (i>>6) {
 			i = 0;
-			while(i < list.len){
-				curr = (Entity*)linked_list_get_at(&list, i);
-				
-				curr->dx = 0;
-				curr->dy = 0;
-				if(spdX > 0xE00){
-					curr->dx = 1;
-				}
-				else if(spdX < 0x100) {
-					curr->dx = -1;
-				}
-				else {
-					if(spdY > 0xE00){
-						curr->dy = 1;
-					}
-					else if(spdY < 0x100) {
-						curr->dy = -1;
-					}
-				}
-				
-				entity_draw(curr, - (ROWS / 2), - (COLS / 2));
-				i++;
+			player_rotate90(enemy2, false);
+			player_rotate90(enemy, true);
+			if (bo == 4) {
+				enemy->body->dy = 1;
+				enemy2->body->dy = 1;
+				bo = 0;
 			}
+			bo++;
+		}
+		if (a>5000) {
+			
+			curr->body->dx = 0;
+			curr->body->dy = 0;
+			if(spdX > 0xE00){
+				curr->body->dx = 1;
+			}
+			else if(spdX < 0x100) {
+				curr->body->dx = -1;
+			}
+			else {
+				if(spdY > 0xE00){
+					curr->body->dy = 1;
+				}
+				else if(spdY < 0x100) {
+					curr->body->dy = -1;
+				}
+			}
+			engine_run(engine);
 			a = 0;
 			b++;
+			i++;
 		}
 		a++;
 	};

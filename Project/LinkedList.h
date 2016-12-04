@@ -29,7 +29,7 @@ struct list_t	{
 *	Constructor
 *******************************************************************************/
 Node* node_new(void* val);
-List linked_list_new(void);
+List* linked_list_new(void);
 
 /******************************************************************************* 
 *	Functions

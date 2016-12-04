@@ -1,18 +1,15 @@
 
 #include "Entity.h"
 
-Entity entity_new () {
+Entity* entity_new () {
 	Entity* newEntity = malloc(sizeof(Entity));
 	// set isMoving bit so that first draw does not skip the lcd draw
 	newEntity->status = 0x1;
-	return *newEntity;
+	return newEntity;
 }
 
-void entity_draw(Entity* e, int camPosX, int camPosY){
+void entity_draw(Entity* e, int camX, int camY, int camPrevX, int camPrevY){
 	
-	if (!(e->status & ENTITY_MOVING_STATUS_M) && e->dx == 0 && e->dy == 0) {
-		return;
-	}
 	
 	// Update motion state
 	if (e->dx || e->dy) {
@@ -23,15 +20,15 @@ void entity_draw(Entity* e, int camPosX, int camPosY){
 	}
 	
 	// Clear previous location of entity if it was displayed on screen
-	if ((e->x - camPosX - ((ROWS + SPRITE_SIZE) / 2)) >= 0
-		&& (e->x - camPosX - ((ROWS - SPRITE_SIZE) / 2)) < ROWS
-		&& (e->y - camPosY - ((COLS + SPRITE_SIZE) / 2)) >= 0
-		&& (e->y - camPosY - ((COLS - SPRITE_SIZE) / 2)) < COLS) {
+	if ((e->x - camPrevX - ((-ROWS + SPRITE_SIZE) / 2)) >= 0
+		&& (e->x - camPrevX - ((ROWS - SPRITE_SIZE) / 2)) < 0
+		&& (e->y - camPrevY - ((-COLS + SPRITE_SIZE) / 2)) >= 0
+		&& (e->y - camPrevY - ((COLS - SPRITE_SIZE) / 2)) < 0) {
 			
 		lcd_clear_rect(
-										e->x - camPosX - (ROWS / 2), // X Center Point
+										e->x - camPrevX + (ROWS / 2), // X Center Point
 										SPRITE_SIZE,   				// Image Horizontal Width
-										e->y - camPosY - (COLS / 2), // Y Center Point
+										e->y - camPrevY + (COLS / 2), // Y Center Point
 										SPRITE_SIZE,  				// Image Vertical Height
 										0x57CA
 									);
@@ -42,10 +39,10 @@ void entity_draw(Entity* e, int camPosX, int camPosY){
 	e->y = e->y + e->dy;
 	
 	// Display entity in new location if it is within the screen limit
-	if ((e->x - camPosX - ((ROWS + SPRITE_SIZE) / 2)) >= 0
-		&& (e->x - camPosX - ((ROWS - SPRITE_SIZE) / 2)) < ROWS 
-		&& (e->y - camPosY - ((COLS + SPRITE_SIZE) / 2)) >= 0
-		&& (e->y - camPosY - ((COLS - SPRITE_SIZE) / 2)) < COLS) {
+	if ((e->x - camX - ((-ROWS + SPRITE_SIZE) / 2)) >= 0
+		&& (e->x - camX - ((ROWS - SPRITE_SIZE) / 2)) < 0 
+		&& (e->y - camY - ((-COLS + SPRITE_SIZE) / 2)) >= 0
+		&& (e->y - camY - ((COLS - SPRITE_SIZE) / 2)) < 0) {
 			
 		if (e->status & ENTITY_MOVING_STATUS_M) {
 			if (entity_update_sprite(e)) {
@@ -56,9 +53,9 @@ void entity_draw(Entity* e, int camPosX, int camPosY){
 			}
 		}
 		lcd_draw_image_64color(
-										e->x - camPosX - (ROWS / 2), // X Center Point
+										e->x - camX + (ROWS / 2), // X Center Point
 										SPRITE_SIZE,   				// Image Horizontal Width
-										e->y - camPosY - (COLS / 2), // Y Center Point
+										e->y - camY + (COLS / 2), // Y Center Point
 										SPRITE_SIZE,  				// Image Vertical Height
 										e->curr_sprite,       // Image
 										e->status & ENTITY_FACING_RIGHT_STATUS_M
@@ -157,6 +154,59 @@ bool entity_update_sprite(Entity* e){
 	}
 	return false;
 }
+
+bool entity_has_collided(Entity* e1, Entity* e2) {
+	int x1_min;
+	int x1_max;
+	int y1_min;
+	int y1_max;
+	int x2_min;
+	int x2_max;
+	int y2_min;
+	int y2_max;
+	bool x_touch;
+	bool y_touch;
+	
+	if (e1 == e2) {
+		return false; // Cannot collide with itself
+	}
+
+	x1_min = e1->x + e1->dx - (SPRITE_SIZE/2);
+	x1_max = e1->x + e1->dx + (SPRITE_SIZE/2);
+	y1_min = e1->y + e1->dy - (SPRITE_SIZE/2);
+	y1_max = e1->y + e1->dy + (SPRITE_SIZE/2);
+	x2_min = e2->x + e2->dx - (SPRITE_SIZE/2);
+	x2_max = e2->x + e2->dx + (SPRITE_SIZE/2);
+	y2_min = e2->y + e2->dy - (SPRITE_SIZE/2);
+	y2_max = e2->y + e2->dy + (SPRITE_SIZE/2);
+	x_touch = (x1_min <= x2_max) && (x1_max >= x2_min);
+	y_touch = ((y1_min <= y2_max) && (y1_max >= y2_min));
+	
+	// Check if any vertex collides with other sprite
+	if (((x1_min < x2_max) && (x1_min > x2_min) && (y1_min < y2_max) && (y1_min > y2_min))
+		|| ((x1_min < x2_max) && (x1_min > x2_min) && (y1_max < y2_max) && (y1_max > y2_min))
+		|| ((x1_max < x2_max) && (x1_max > x2_min) && (y1_min < y2_max) && (y1_min > y2_min))
+		|| ((x1_max < x2_max) && (x1_max > x2_min) && (y1_max < y2_max) && (y1_max > y2_min))) {
+		
+		e1->dx = 0;
+		e1->dy = 0;
+		
+		return true;	// Collision detected
+	}
+	
+	// Check if entities are next to each other vertically
+	if (((x1_min == x2_min) || (x1_max == x2_max)) && y_touch) {
+		e1->dy = 0;
+	}
+	
+	// Check if entities are next to each other horizontally
+	if (((y1_min == y2_min) || (y1_max == y2_max)) && x_touch) {
+		e1->dx = 0;
+	}
+	
+	return false;
+}
+
 void entity_set_base_sprite(
 	Entity* e, 
 	const uint8_t *up,

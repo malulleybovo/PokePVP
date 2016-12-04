@@ -14,9 +14,6 @@
 typedef struct _Player Player;
 struct _Player {
 	
-	int x;
-	int y;
-	
 	int hp;
 	int pp;
 	
@@ -27,12 +24,15 @@ struct _Player {
 /******************************************************************************* 
 *	Constructor
 *******************************************************************************/
-Player player_new(void);
+Player* player_new(void);
 
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void player_render(Player* player, int camPosX, int camPosY);
+void player_rotate90(Player* player, bool isClkwise);
+void player_render(Player* player, 
+	int camX, int camY, 
+	int camPrevX, int camPrevY);
 // TODO other functions
 
 #endif

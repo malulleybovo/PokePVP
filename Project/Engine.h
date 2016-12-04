@@ -23,12 +23,74 @@ struct _Engine {
 /******************************************************************************* 
 *	Constructor
 *******************************************************************************/
-Engine engine_new(void);
+Engine* engine_new(void);
 
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void engine_init(void);
-void engine_run(void);
+void engine_init(Engine* engine);
+void engine_run(Engine* engine);
+
+Player* engine_setup_main_player(
+	Engine* engine,
+	
+	char* id,
+	
+	int x, 
+	int y, 
+	
+	int hp,
+	int pp,
+	
+	const uint8_t *b_u, 
+	const uint8_t *b_d, 
+	const uint8_t *b_l, 
+	const uint8_t *m_u, 
+	const uint8_t *m_d, 
+	const uint8_t *m_l, 
+	const uint8_t *a_u,
+	const uint8_t *a_d, 
+	const uint8_t *a_l);
+
+Player* engine_new_player(
+	Engine* engine,
+	
+	char* id, 
+		
+	int x, 
+	int y, 
+		
+	int hp, 
+	int pp, 
+	
+	const uint8_t *b_u, 
+	const uint8_t *b_d, 
+	const uint8_t *b_l, 
+	const uint8_t *m_u, 
+	const uint8_t *m_d, 
+	const uint8_t *m_l, 
+	const uint8_t *a_u,
+	const uint8_t *a_d, 
+	const uint8_t *a_l);
+	
+Spell* engine_new_spell(
+	Engine* engine,
+	
+	char* id, 
+		
+	int x, 
+	int y, 
+	
+	const uint8_t *b_u, 
+	const uint8_t *b_d, 
+	const uint8_t *b_l, 
+	const uint8_t *m_u, 
+	const uint8_t *m_d, 
+	const uint8_t *m_l, 
+	const uint8_t *a_u,
+	const uint8_t *a_d, 
+	const uint8_t *a_l);
+	
+Player* engine_get_player(Engine* engine, int i);
 
 #endif

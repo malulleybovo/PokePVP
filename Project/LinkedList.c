@@ -8,14 +8,14 @@ Node* node_new(void* val){
 	return node;
 }
 
-List linked_list_new(){
+List* linked_list_new(){
 	List* list = malloc(sizeof(List));
 	
 	list->head = NULL;
 	list->tail = NULL;
 	list->len = 0;
 	
-	return *list;
+	return list;
 }
 
 void linked_list_add(List* l, void* val){

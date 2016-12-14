@@ -11,3 +11,8 @@ ANALOG INPUT SAMPLING {
     - Polling-based sampling may cause damage to game FPS due to busy waiting
 }
 
+LINKED LIST {
+    - (RESOLVED) Removing elements from list causes node pointer to be lost. 
+      Cannot free it because it returns a pointer to val within node.
+}
+

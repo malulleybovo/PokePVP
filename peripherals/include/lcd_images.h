@@ -34,9 +34,14 @@ extern const uint8_t sprite_mot_left[];
 extern const uint8_t sprite_mot_right[];
 extern const uint8_t sprite_up_2 [];
 extern const uint8_t sprite_mot_up_2 [];
+extern const uint8_t sprite_atk_up_2 [];
 extern const uint8_t sprite_down_2 [];
 extern const uint8_t sprite_mot_down_2 [];
+extern const uint8_t sprite_atk_down_2 [];
 extern const uint8_t sprite_left_2 [];
 extern const uint8_t sprite_mot_left_2 [];
+extern const uint8_t sprite_atk_left_2 [];
+extern const uint8_t sprite_spc_atk_2 [];
+extern const uint8_t sprite_spc_atk_mot_2 [];
 
 #endif

@@ -28,6 +28,7 @@
 
 #include "TM4C123.h"
 #include "gpio_port.h"
+#include "launchpad_io.h"
 #include "adc.h"
 #include "ps2.h"
 #include "PLL.h"
@@ -38,6 +39,6 @@
 #include "LinkedList.h"
 #include "Engine.h"
 
-extern void serialDebugInit(void);
+extern void serialDebugInit(void);void ice_port_f_fsm(void);
 
 #endif

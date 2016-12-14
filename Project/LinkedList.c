@@ -67,42 +67,53 @@ void linked_list_add_at(List* l, void* val, int i){
 	l->len++;
 }
 
-void* linked_list_remove(List* l){
+void linked_list_remove(List* l){ 
 	int i = 0;
 	Node* curr;
-	void* val;
 	
 	if (l->len <= 0){
-		return NULL;
+		return;
+	}
+	else if (l->len == 1) {
+		free(l->head);
+		l->head = NULL;
+		l->tail = NULL;
+		l->len = 0;
+		return;
 	}
 	
 	// Get second last node
+	// Note: curr is the last node if len is 1
 	curr = l->head;
 	while(i < l->len - 2){
 		curr = curr->next;
 		i++;
 	}
 	
-	// Get last node
-	val = curr->next->val;
-	
 	// Update end of list
+	free(curr->next);
 	curr->next = NULL;
 	l->tail = curr;
 	l->len--;
-	
-	return val;
 }
 
-void* linked_list_remove_at(List* l, int i){
+void linked_list_remove_at(List* l, int i){
 	Node* curr;
-	void* val;
+	Node* toRemove;
 
 	if (l->len <= 0 || i < 0 || i >= l->len){
-		return NULL;
+		return;
 	}
 	else if (i == l->len - 1){
-		return linked_list_remove(l);
+		linked_list_remove(l);
+		return;
+	}
+	else if (i == 0){
+		toRemove = l->head;
+		l->head = l->head->next;
+		free(toRemove);
+		l->len--;
+		return;
 	}
 	
 	// Get (i - 1)th node
@@ -112,14 +123,13 @@ void* linked_list_remove_at(List* l, int i){
 		i--;
 	}
 	
-	// Extract val at i from list
-	val = curr->next->val;
-	
 	// Update list
+	toRemove = curr->next;
 	curr->next = curr->next->next;
+	free(toRemove);
 	l->len--;
 	
-	return val;
+	return;
 }
 
 void* linked_list_get_at(List* l, int i){
@@ -135,9 +145,4 @@ void* linked_list_get_at(List* l, int i){
 		i--;
 	}
 	return curr->val;
-}
-
-void* linked_list_search(List* l, void* val){
-	//TODO
-	return NULL;
 }

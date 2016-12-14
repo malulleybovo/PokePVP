@@ -25,7 +25,7 @@ struct _Entity {
 	// status bits :
 	// bit 0 - is Moving ? 1 : 0
 	// bit 1 - is Attacking ? 1 : 0
-	// bit 2 - is Facing Right ? 1 : 0
+	// bit 3~2 - facing: up = b11, down = b10, left = b01, right = b00
 	uint8_t status;
 	
 	int8_t mot_count;
@@ -52,7 +52,11 @@ struct _Entity {
 #define ANIM_TRANSITION 16
 #define ENTITY_MOVING_STATUS_M 0x1
 #define ENTITY_ATKING_STATUS_M 0x2
-#define ENTITY_FACING_RIGHT_STATUS_M 0x4
+#define ENTITY_DIR_STATUS_M 0xC
+#define ENTITY_FACE_UP_STATUS 0xC
+#define ENTITY_FACE_DOWN_STATUS 0x8
+#define ENTITY_FACE_LEFT_STATUS 0x4
+#define ENTITY_FACE_RIGHT_STATUS 0x0
 
 /******************************************************************************* 
 *	Constructor
@@ -60,13 +64,21 @@ struct _Entity {
 Entity* entity_new(void);
 
 /******************************************************************************* 
+*	Destructor
+*******************************************************************************/
+void entity_free(Entity* e);
+
+/******************************************************************************* 
 *	Functions
 *******************************************************************************/
+void entity_attack(Entity* e);
 void entity_draw(Entity* e,
 	int camX, int camY,
 	int camPrevX, int camPrevY);
+void entity_clear(Entity* e,
+	int camX, int camY,
+	int camPrevX, int camPrevY);
 void entity_rotate90(Entity* e, bool isClkwise);
-bool entity_update_sprite(Entity* e);
 bool entity_has_collided(Entity* e1, Entity* e2);
 void entity_set_base_sprite(
 	Entity* e,

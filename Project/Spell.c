@@ -10,12 +10,25 @@ Spell* spell_new(){
 	
 }
 
+void spell_free(Spell* spell){
+	entity_free(spell->body);
+	free(spell);
+}
+
 void spell_set_body(Spell* spell, Entity* e){
 	spell->body = e;
 }
 
-void spell_render(Spell* spell,
+bool spell_render(Spell* spell,
 	int camX, int camY, 
 	int camPrevX, int camPrevY) {
+	// Check if spell has enough energy for attack (1 Animation Period)
+	if(spell->lifespan < ANIM_FREQ) {
+		// Spell energy has depleted
+		entity_clear(spell->body, camX, camY, camPrevX, camPrevY);
+		return false;
+	}
 	entity_draw(spell->body, camX, camY, camPrevX, camPrevY);
+	spell->lifespan--;
+	return true;
 }

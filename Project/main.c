@@ -22,6 +22,89 @@
 
 #include "main.h"
 
+
+typedef enum 
+{
+  DEBOUNCE_ONE,
+  DEBOUNCE_1ST_ZERO,
+  DEBOUNCE_2ND_ZERO,
+  DEBOUNCE_PRESSED
+} DEBOUNCE_STATES;
+bool sw1_debounce_fsm(void)
+{
+  static DEBOUNCE_STATES state = DEBOUNCE_ONE;
+  int i = 10000;
+  bool pin_logic_level;
+  
+  pin_logic_level = lp_io_read_pin(SW1_PIN);
+  
+  switch (state)
+  {
+    case DEBOUNCE_ONE:
+    {
+      if(pin_logic_level)
+      {
+        state = DEBOUNCE_ONE;
+      }
+      else
+      {
+        state = DEBOUNCE_1ST_ZERO;
+      }
+      break;
+    }
+    case DEBOUNCE_1ST_ZERO:
+    {
+      if(pin_logic_level)
+      {
+        state = DEBOUNCE_ONE;
+      }
+      else
+      {
+        state = DEBOUNCE_2ND_ZERO;
+      }
+      break;
+    }
+    case DEBOUNCE_2ND_ZERO:
+    {
+      if(pin_logic_level)
+      {
+        state = DEBOUNCE_ONE;
+      }
+      else
+      {
+        state = DEBOUNCE_PRESSED;
+      }
+      break;
+    }
+    case DEBOUNCE_PRESSED:
+    {
+      if(pin_logic_level)
+      {
+        state = DEBOUNCE_ONE;
+      }
+      else
+      {
+        state = DEBOUNCE_PRESSED;
+      }
+      break;
+    }
+    default:
+    {
+      while(1){};
+    }
+  }
+  
+  if(state == DEBOUNCE_2ND_ZERO )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+
 //*****************************************************************************
 //*****************************************************************************
 int 
@@ -33,15 +116,19 @@ main(void)
 	int bo = 0;
 	uint16_t spdX = 0x7d7;
 	uint16_t spdY = 0x7d7;
+	bool is_sw1_pressed = false;
+	bool i2 = true;
 	Player* curr;
 	Player* enemy;
 	Player* enemy2;
+	Spell* spell0;
 	Engine* engine = engine_new();
 	
 	PLL_Init();
 	
   initialize_serial_debug();
   ps2_initialize(); 
+  lp_io_init();
   
   lcd_config_gpio();
   
@@ -55,15 +142,15 @@ main(void)
 		40, // y
 		40, // hp
 		10, // pp
-		sprite_up,
-		sprite_down,
-		sprite_left,
-		sprite_mot_up,
-		sprite_mot_down,
-		sprite_mot_left,
-		NULL,
-		NULL,
-		NULL);
+		sprite_up_2,
+		sprite_down_2,
+		sprite_left_2,
+		sprite_mot_up_2,
+		sprite_mot_down_2,
+		sprite_mot_left_2,
+		sprite_atk_up_2,
+		sprite_atk_down_2,
+		sprite_atk_left_2);
 		
 	enemy = engine_new_player(engine, 
 		"P2", 
@@ -101,10 +188,13 @@ main(void)
 		if (b>>2) {
 			spdX = ps2_get_x();
 			spdY = ps2_get_y();
+			is_sw1_pressed = sw1_debounce_fsm();
 			b = 0;
 		}
 		if (i>>6) {
-			i = 0;
+			i = 0; i2 = true;
+			enemy = scene_find_player_by_id(engine->world->scene, "P2");
+			enemy2 = scene_find_player_by_id(engine->world->scene, "P3");
 			player_rotate90(enemy2, false);
 			player_rotate90(enemy, true);
 			if (bo == 4) {
@@ -136,6 +226,25 @@ main(void)
 			a = 0;
 			b++;
 			i++;
+			
+			lp_io_clear_pin(RED_PIN);
+			if(is_sw1_pressed) {
+					lp_io_set_pin(RED_PIN);
+				player_attack(curr);
+				if(i2) {
+				spell0 = engine_new_bullet_spell(engine, curr, "spell0", 100, 10,
+					sprite_spc_atk_2,
+					sprite_spc_atk_2,
+					sprite_spc_atk_2,
+					sprite_spc_atk_mot_2,
+					sprite_spc_atk_mot_2,
+					sprite_spc_atk_mot_2,
+					NULL,
+					NULL,
+					NULL);
+					i2 = false;
+				}
+			}
 		}
 		a++;
 	};

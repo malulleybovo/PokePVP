@@ -1,5 +1,5 @@
-#ifndef __PLAYER_H__
-#define __PLAYER_H__
+#ifndef __SPRITE_H__
+#define __SPRITE_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,34 +11,39 @@
 /******************************************************************************* 
 *	Definition
 *******************************************************************************/
-typedef struct _Player Player;
-struct _Player {
+typedef struct _Sprite Sprite;
+struct _Sprite {
 	
-	int hp;
-	int pp;
+	const uint8_t *base_u;
+	const uint8_t *base_d;
+	const uint8_t *base_l;
 	
-	Entity* body;
+	const uint8_t *mot_u;
+	const uint8_t *mot_d;
+	const uint8_t *mot_l;
+	
+	const uint8_t *atk_u;
+	const uint8_t *atk_d;
+	const uint8_t *atk_l;
 	
 };
 
 /******************************************************************************* 
 *	Constructor
 *******************************************************************************/
-Player* player_new(void);
-
-/******************************************************************************* 
-*	Destructor
-*******************************************************************************/
-void player_free(Player* player);
+Sprite* sprite_new(
+	const uint8_t *b_u, 
+	const uint8_t *b_d, 
+	const uint8_t *b_l, 
+	const uint8_t *m_u, 
+	const uint8_t *m_d, 
+	const uint8_t *m_l, 
+	const uint8_t *a_u,
+	const uint8_t *a_d, 
+	const uint8_t *a_l);
 
 /******************************************************************************* 
 *	Functions
 *******************************************************************************/
-void player_attack(Player* player);
-void player_rotate90(Player* player, bool isClkwise);
-void player_render(Player* player, 
-	int camX, int camY, 
-	int camPrevX, int camPrevY);
-// TODO other functions
 
 #endif
